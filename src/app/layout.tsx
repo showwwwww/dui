@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { I18nProvider } from '@/app/contexts/i18n-context';
-import { getValidLocale } from '@/lib/i18n';
+import { getLocaleFromCookies } from '@/lib/i18n_utils';
 import './globals.css';
 
 const geistSans = Geist({
@@ -24,7 +24,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getValidLocale();
+  const locale = await getLocaleFromCookies();
   return (
     <html lang={locale}>
       <I18nProvider initialLocale={locale}>

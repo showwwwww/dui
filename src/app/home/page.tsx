@@ -5,7 +5,6 @@ export default function Home() {
 
   React.useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme ? 'light' : 'dark');
-    console.log(navigator);
   }, [theme]);
   return (
     <div>

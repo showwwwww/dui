@@ -4,6 +4,7 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import type { Locale } from '@/types/i18n';
 import { defaultLocale } from '@/lib/i18n';
+import { I18N_COOKIE_KEY } from '@/static/cookies';
 
 const I18nContext = React.createContext<{
   locale: Locale;
@@ -23,7 +24,7 @@ export function I18nProvider({
   const [locale, setLocale] = React.useState<Locale>(initialLocale);
 
   React.useEffect(() => {
-    Cookies.set('NEXT_LOCALE', locale, {
+    Cookies.set(I18N_COOKIE_KEY, locale, {
       expires: 365,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
