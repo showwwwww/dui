@@ -16,7 +16,7 @@ export default function Home() {
       >
         toggle Theme
       </button>
-      <h1>Hello World</h1>
+      <h1></h1>
     </div>
   );
 }

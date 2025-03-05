@@ -137,7 +137,7 @@ module.exports = {
       },
     },
     {
-      files: ['pages/**/*.tsx', 'src/pages/**/*.tsx'],
+      files: ['src/**/*.{ts, tsx}'],
       rules: {
         'import/no-default-export': 'off',
       },
