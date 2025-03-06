@@ -1,21 +1,23 @@
 'use client';
 import React from 'react';
-export default function Home() {
-  const [theme, setTheme] = React.useState(true);
+import { useTheme } from '@/app/contexts/theme-context';
 
-  React.useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme ? 'light' : 'dark');
-  }, [theme]);
+export default function Home() {
+  const { setTheme } = useTheme();
   return (
     <div>
       <button
         onClick={() => {
-          setTheme(!theme);
+          setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
         }}
       >
         toggle Theme
       </button>
-      <h1></h1>
+      <div className="bg-foreground">
+        <h1 className="text-background text-5xl">Hello World!</h1>
+      </div>
+      <div className="text-sm">Samll</div>
+      <div className="text-4xl">Bigg</div>
     </div>
   );
 }

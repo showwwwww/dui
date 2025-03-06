@@ -1,28 +1,74 @@
-@import 'tailwindcss/preflight';
-@tailwind utilities;
+@config './tailwind.config.ts';
+@import 'tailwindcss';
 
 @layer base {
+  /* ===== Light Theme ===== */
   :root {
-    /* Light Theme */
-    --background: #ffffff;
-    --foreground: #171717;
-    --primary: #007aff;
-    --secondary: #f5f5f5;
-    --border: #e5e5e5;
+    /* base color */
+    --background: 255 255 255; /* white */
+    --foreground: 17 24 39; /* gray-900 */
+
+    /* primary color */
+    --primary: 29 78 216; /* blue-600 */
+    --primary-foreground: 255 255 255;
+
+    /* secondary color */
+    --secondary: 124 58 237; /* violet-600 */
+    --secondary-foreground: 255 255 255;
+
+    /* border and splitter */
+    --border: 229 231 235; /* gray-200 */
+    --input: 243 244 246; /* gray-100 (input background) */
+
+    /* hint color */
+    --muted: 107 114 128; /* gray-500 (secondary text) */
+    --ring: 59 130 246; /* blue-500 (focus border) */
+
+    /* error color */
+    --destructive: 220 38 38; /* red-600 */
+
+    /* sucess color */
+    --success: 16 185 129; /* green-600 */
+
+    /* warning color */
+    --warning: 255 204 0; /* yellow-500 */
   }
 
+  /* ===== Dark Theme ===== */
   [data-theme='dark'] {
-    /* Dark Theme */
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #00aaff;
-    --secondary: #1a1a1a;
-    --border: #333;
+    /* base color */
+    --background: 17 24 39; /* gray-900 */
+    --foreground: 249 250 251; /* gray-50 */
+
+    /* primary color */
+    --primary: 59 130 246; /* blue-500 (lighter blue) */
+    --primary-foreground: 255 255 255;
+
+    /* secondary color */
+    --secondary: 52 211 153; /* emerald-400 (enhance view layer) */
+    --secondary-foreground: 17 24 39;
+
+    /* border and splitter */
+    --border: 55 65 81; /* gray-700 */
+    --input: 31 41 55; /* gray-800 */
+
+    /* hint color */
+    --muted: 156 163 175; /* gray-400 */
+    --ring: 99 102 241; /* indigo-500 */
+
+    /* error color */
+    --destructive: 239 68 68; /* red-500 */
+
+    /* sucess color */
+    --success: 39 174 96; /* green-500 */
+
+    /* warning color */
+    --warning: 252 211 77; /* yellow-500 */
   }
 
   html {
     @apply transition-all duration-300;
-    background: var(--background);
-    color: var(--foreground);
+    background: rgb(var(--background));
+    color: rgb(var(--foreground));
   }
 }

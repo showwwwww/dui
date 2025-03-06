@@ -1,5 +1,5 @@
 import type { Locale, Translations } from '@/types/i18n';
-import LocalStorage from './persist/localStorage';
+import LocalStorage from '@/lib/persist/localStorage';
 
 export const locales = ['en', 'zh-CN'] as const satisfies readonly Locale[];
 
@@ -11,14 +11,14 @@ export const loadTranslations = async (locale: Locale): Promise<Translations[Loc
   }
 
   try {
-    const translations = (await import(`@/app/locales/${locale}/index`)).default;
+    const translations = (await import(`@/locales/${locale}/index`)).default;
     LocalStorage.set(locale, translations);
     return translations;
   } catch {
     if (LocalStorage.has(DEFAULT_LOCALE)) {
       return LocalStorage.get(DEFAULT_LOCALE) as Translations[Locale];
     }
-    const defaultTranslations = (await import(`@/app/locales/${DEFAULT_LOCALE}/index`)).default;
+    const defaultTranslations = (await import(`@/locales/${DEFAULT_LOCALE}/index`)).default;
     LocalStorage.set(DEFAULT_LOCALE, defaultTranslations);
     return defaultTranslations;
   }
