@@ -1,23 +1,29 @@
 import type { Locale, Translations } from '@/types/i18n';
+import LocalStorage from './persist/localStorage';
 
 export const locales = ['en', 'zh-CN'] as const satisfies readonly Locale[];
 
-export const defaultLocale: Locale = 'en';
-
-const translationsCache = new Map<Locale, Translations[Locale]>();
+export const DEFAULT_LOCALE: Locale = 'en';
 
 export const loadTranslations = async (locale: Locale): Promise<Translations[Locale]> => {
-  if (translationsCache.has(locale)) {
-    return translationsCache.get(locale) as Translations[Locale];
+  if (LocalStorage.has(locale)) {
+    return LocalStorage.get(locale) as Translations[Locale];
   }
 
   try {
-    return (await import(`@/app/locales/${locale}/index`)).default;
+    const translations = (await import(`@/app/locales/${locale}/index`)).default;
+    LocalStorage.set(locale, translations);
+    return translations;
   } catch {
-    return (await import('@/app/locales/en/index')).default;
+    if (LocalStorage.has(DEFAULT_LOCALE)) {
+      return LocalStorage.get(DEFAULT_LOCALE) as Translations[Locale];
+    }
+    const defaultTranslations = (await import(`@/app/locales/${DEFAULT_LOCALE}/index`)).default;
+    LocalStorage.set(DEFAULT_LOCALE, defaultTranslations);
+    return defaultTranslations;
   }
 };
 
 export const getValidLocale = (input?: string | null): Locale => {
-  return locales.includes(input as Locale) ? (input as Locale) : defaultLocale;
+  return locales.includes(input as Locale) ? (input as Locale) : DEFAULT_LOCALE;
 };

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Negotiator from 'negotiator';
 import { match } from '@formatjs/intl-localematcher';
-import { getValidLocale, locales, defaultLocale } from '@/lib/i18n';
+import { getValidLocale, locales, DEFAULT_LOCALE } from '@/lib/i18n';
 import { I18N_COOKIE_KEY } from '@/static/cookies';
 
 export function middleware(request: NextRequest) {
@@ -34,7 +34,7 @@ function detectBrowserLocale(request: NextRequest): string | null {
   const negotiator = new Negotiator({
     headers: { 'accept-language': request.headers.get('accept-language') || '' },
   });
-  return match(negotiator.languages(), locales, defaultLocale);
+  return match(negotiator.languages(), locales, DEFAULT_LOCALE);
 }
 
 export const config = {

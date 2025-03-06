@@ -1,3 +1,4 @@
+'use server';
 import { cookies } from 'next/headers';
 import { I18N_COOKIE_KEY } from '@/static/cookies';
 import { Locale } from '@/types/i18n';

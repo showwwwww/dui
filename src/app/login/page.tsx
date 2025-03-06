@@ -1,10 +1,29 @@
-import { loadTranslations } from '@/lib/i18n';
-import { getLocaleFromCookies } from '@/lib/i18n_utils';
-import LoginClient from './LoginClient';
+'use client';
 
-export default async function Login() {
-  const locale = await getLocaleFromCookies();
-  const translations = await loadTranslations(locale);
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { Locale } from '@/types/i18n';
+import { useI18n } from '@/app/contexts/i18n-context';
 
-  return <LoginClient initialTranslations={translations} />;
+export default function Login() {
+  const router = useRouter();
+  const { locale, setLocale, translations: t } = useI18n();
+  return (
+    <div>
+      <button
+        onClick={() => {
+          router.push('/home');
+        }}
+      >
+        {t.loginPage.loginButton}
+      </button>
+      <button
+        onClick={() => {
+          setLocale((locale === 'zh-CN' ? 'en' : 'zh-CN') as Locale);
+        }}
+      >
+        toggle i18n
+      </button>
+    </div>
+  );
 }
