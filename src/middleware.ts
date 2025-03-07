@@ -1,40 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Negotiator from 'negotiator';
-import { match } from '@formatjs/intl-localematcher';
-import { getValidLocale, locales, DEFAULT_LOCALE } from '@/lib/i18n';
-import { I18N_COOKIE_KEY } from '@/static/cookies';
+import plugins from '@/mw-plugins';
+
+const exclude = (request: Request): boolean => {
+  return request.url.startsWith('/api') || request.url.startsWith('/_next');
+};
 
 export function middleware(request: NextRequest) {
-  // exclude API routes and Next.js internal routes
-  if (request.nextUrl.pathname.startsWith('/api')) return NextResponse.next();
-
-  // language detection
-  const cookieLocale = request.cookies.get(I18N_COOKIE_KEY)?.value;
-  const detectedLocale = cookieLocale || detectBrowserLocale(request);
-
-  const validLocale = getValidLocale(detectedLocale);
-
-  // set request headers and cookies
   const response = NextResponse.next();
-  response.headers.set('x-locale', validLocale);
-
-  if (!cookieLocale) {
-    response.cookies.set(I18N_COOKIE_KEY, validLocale, {
-      maxAge: 365 * 24 * 60 * 60,
-      path: '/',
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: false,
-    });
+  if (exclude(request)) {
+    return response;
   }
-  return response;
-}
 
-function detectBrowserLocale(request: NextRequest): string | null {
-  const negotiator = new Negotiator({
-    headers: { 'accept-language': request.headers.get('accept-language') || '' },
-  });
-  return match(negotiator.languages(), locales, DEFAULT_LOCALE);
+  for (const plugin of plugins) {
+    if (plugin.matcher(request)) {
+      plugin.middleware(request, response);
+    }
+  }
+
+  return response;
 }
 
 export const config = {

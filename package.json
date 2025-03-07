@@ -3,17 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "concurrently \"next dev --turbopack\" \"npm run watch-plugins\"",
+    "watch-plugins": "npm run scripts && node ./scripts/dev-watcher.mjs",
+    "build": "npm run scripts && next build",
     "start": "next start",
-    "lint": "next lint",
-    "prepare": "husky install"
+    "lint": "npm run scripts && next lint",
+    "prepare": "npm run scripts && husky install",
+    "scripts": "node ./scripts/generates-mw-plugins.mjs --source ./src/mw-plugins --output ./src/mw-plugins"
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.6.0",
     "js-cookie": "^3.0.5",
     "negotiator": "^1.0.0",
     "next": "15.2.1",
+    "next-auth": "^4.24.11",
+    "rate-limiter-flexible": "^5.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -28,6 +32,8 @@
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "autoprefixer": "^10.4.20",
+    "chokidar": "^4.0.3",
+    "concurrently": "^9.1.2",
     "eslint": "^9.21.0",
     "eslint-config-next": "^15.2.1",
     "eslint-config-prettier": "^10.0.2",

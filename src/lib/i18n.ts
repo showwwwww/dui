@@ -1,25 +1,25 @@
-import type { Locale, Translations } from '@/types/i18n';
-import LocalStorage from '@/lib/persist/localStorage';
+import PersistClient from '@/lib/persist_client/';
 
 export const locales = ['en', 'zh-CN'] as const satisfies readonly Locale[];
 
 export const DEFAULT_LOCALE: Locale = 'en';
 
 export const loadTranslations = async (locale: Locale): Promise<Translations[Locale]> => {
-  if (LocalStorage.has(locale)) {
-    return LocalStorage.get(locale) as Translations[Locale];
+  const TranslationsStore = PersistClient.getTranslationsStore();
+  if (TranslationsStore.has(locale)) {
+    return TranslationsStore.get(locale) as Translations[Locale];
   }
 
   try {
     const translations = (await import(`@/locales/${locale}/index`)).default;
-    LocalStorage.set(locale, translations);
+    TranslationsStore.set(locale, translations);
     return translations;
   } catch {
-    if (LocalStorage.has(DEFAULT_LOCALE)) {
-      return LocalStorage.get(DEFAULT_LOCALE) as Translations[Locale];
+    if (TranslationsStore.has(DEFAULT_LOCALE)) {
+      return TranslationsStore.get(DEFAULT_LOCALE) as Translations[Locale];
     }
     const defaultTranslations = (await import(`@/locales/${DEFAULT_LOCALE}/index`)).default;
-    LocalStorage.set(DEFAULT_LOCALE, defaultTranslations);
+    TranslationsStore.set(DEFAULT_LOCALE, defaultTranslations);
     return defaultTranslations;
   }
 };

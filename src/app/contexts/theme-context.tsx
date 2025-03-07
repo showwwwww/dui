@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
-import Cookies from 'js-cookie';
-import type { Theme } from '@/types/theme';
+import PersistClient from '@/lib/persist_client';
 import { THEME_COOKIE_KEY } from '@/static/cookies';
 
 const ThemeContext = React.createContext<{
@@ -12,16 +11,18 @@ const ThemeContext = React.createContext<{
   setTheme: () => {},
 });
 
+const ThemeStore = PersistClient.getThemeStore();
+
 export function ThemeProvider({
-  children,
   initialTheme,
+  children,
 }: {
-  children: React.ReactNode;
   initialTheme: Theme;
+  children: React.ReactNode;
 }) {
   const [theme, setTheme] = React.useState<Theme>(initialTheme);
   React.useEffect(() => {
-    Cookies.set(THEME_COOKIE_KEY, theme, {
+    ThemeStore.set(THEME_COOKIE_KEY, theme, {
       expires: 365,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Locale } from '@/types/i18n';
 import { useI18n } from '@/app/contexts/i18n-context';
 
 export default function Login() {
@@ -15,7 +14,7 @@ export default function Login() {
           router.push('/home');
         }}
       >
-        {t.loginPage.loginButton}
+        {t?.loginPage.loginButton}
       </button>
       <button
         onClick={() => {
@@ -24,6 +23,7 @@ export default function Login() {
       >
         toggle i18n
       </button>
+      <h1>{locale}</h1>
     </div>
   );
 }
