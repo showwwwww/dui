@@ -11,9 +11,7 @@ const packageJsonPath = path.resolve(process.cwd(), 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
 
 // Split the commands by '&&' and trim each command
-const commands = packageJson.scripts.scripts
-  .split('&&')
-  .map((command) => command.trim());
+const commands = packageJson.scripts.scripts.split('&&').map((command) => command.trim());
 
 const watcherPaths = commands
   .map((command) => {
@@ -27,13 +25,16 @@ let isProcessing = false;
 
 const initWatcher = () => {
   return chokidar.watch(watcherPaths, {
-    ignored: [/(^|[/\\])\../, ...watcherPaths.map((path) => `${path}/index.ts`)],
+    ignored: [
+      /(^|[/\\])\../,
+      ...watcherPaths.map((path) => `${path}/index.ts`.replace(/\\/g, '/')),
+    ],
     persistent: true,
     ignoreInitial: true,
     awaitWriteFinish: {
       stabilityThreshold: 2000,
-      pollInterval: 100
-    }
+      pollInterval: 100,
+    },
   });
 };
 
@@ -49,11 +50,12 @@ const handleFileChange = async (filePath) => {
 
   console.log(`🔄 Detected change: ${filePath}`);
   exec('npm run scripts', async (err, stdout) => {
-    if (err) { console.error('❌ Script error:', err);}
-    
+    if (err) {
+      console.error('❌ Script error:', err);
+    }
+
     console.log('✅ Script output:', stdout);
 
-    // rebuild watcher
     watcher = initWatcher();
     bindListeners();
     isProcessing = false;
@@ -62,11 +64,11 @@ const handleFileChange = async (filePath) => {
 
 const bindListeners = () => {
   watcher
-  .on('ready', () => console.log('👀 Watching for file changes...'))
-  .on('add', handleFileChange)
-  .on('unlink', handleFileChange)
-  .on('change', handleFileChange)
-  .on('error', (err) => console.error('🔥 Watching error:', err));
+    .on('ready', () => console.log('👀 Watching for file changes...'))
+    .on('add', handleFileChange)
+    .on('unlink', handleFileChange)
+    .on('change', handleFileChange)
+    .on('error', (err) => console.error('🔥 Watching error:', err));
 };
 
 watcher = initWatcher();
