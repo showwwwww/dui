@@ -1,8 +1,12 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest } from 'next/server';
 import Negotiator from 'negotiator';
 import { match } from '@formatjs/intl-localematcher';
-import { getValidLocale, locales, DEFAULT_LOCALE } from '@/lib/i18n';
-import { I18N_COOKIE_KEY } from '@/static/cookies';
+import { LOCALE_COOKIE_KEY, DEFAULT_LOCALE, locales } from '@/const';
+import ssrPrefService from '@/service/ServerPreferencesService';
+
+const getValidLocale = (input?: string | null): Locale => {
+  return locales.includes(input as Locale) ? (input as Locale) : DEFAULT_LOCALE;
+};
 
 const detectBrowserLocale = (request: NextRequest): string | null => {
   const negotiator = new Negotiator({
@@ -11,31 +15,20 @@ const detectBrowserLocale = (request: NextRequest): string | null => {
   return match(negotiator.languages(), locales, DEFAULT_LOCALE);
 };
 
-const handleI18n = (request: NextRequest, response: NextResponse) => {
+const handleI18n = (request: NextRequest) => {
   // language detection
-  const cookieLocale = request.cookies.get(I18N_COOKIE_KEY)?.value;
+  const cookieLocale = request.cookies.get(LOCALE_COOKIE_KEY)?.value;
   const detectedLocale = cookieLocale || detectBrowserLocale(request);
 
   const validLocale = getValidLocale(detectedLocale);
 
-  // set request headers and cookies
-  response.headers.set('x-locale', validLocale);
-
-  if (!cookieLocale) {
-    response.cookies.set(I18N_COOKIE_KEY, validLocale, {
-      maxAge: 365 * 24 * 60 * 60,
-      path: '/',
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-    });
-  }
+  // save locale
+  ssrPrefService.saveLocalePreference(validLocale);
 };
 
 const defaultPlugin: MWPlugin = {
   middleware: (request) => {
-    const response = NextResponse.next();
-    handleI18n(request, response);
-    return response;
+    handleI18n(request);
   },
   // handle all default api
   matcher: () => true,

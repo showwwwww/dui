@@ -1,10 +1,8 @@
 'use client';
 
 import React from 'react';
-import PersistClient from '@/lib/persist_client';
-import { I18N_COOKIE_KEY } from '@/static/cookies';
-import { loadTranslations } from '@/lib/i18n';
 import defaultTranslations from '@/locales/en';
+import userPrefService from '@/service/UserPreferencesService';
 
 const I18nContext = React.createContext<{
   locale: Locale;
@@ -16,8 +14,6 @@ const I18nContext = React.createContext<{
   setLocale: () => {},
 });
 
-const LocaleStore = PersistClient.getLocaleStore();
-
 export function I18nProvider({
   initialLocale,
   children,
@@ -28,13 +24,8 @@ export function I18nProvider({
   const [locale, setLocale] = React.useState<Locale>(initialLocale);
   const [translations, setTranslations] = React.useState<TranslationKeys>(defaultTranslations);
   React.useEffect(() => {
-    LocaleStore.set(I18N_COOKIE_KEY, locale, {
-      expires: 365,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-    });
-    loadTranslations(locale).then(setTranslations);
-    setLocale(locale);
+    userPrefService.saveLocalePreference(locale);
+    userPrefService.getTranslations(locale).then(setTranslations);
   }, [locale]);
 
   return (

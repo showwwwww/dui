@@ -1,23 +1,18 @@
-import { type NextRequest, NextResponse } from 'next/server';
-import { THEME_COOKIE_KEY } from '@/static/cookies';
+import { type NextRequest } from 'next/server';
+import ssrPrefService from '@/service/ServerPreferencesService';
+import { THEME_COOKIE_KEY } from '@/const';
 
-const handleTheme = (request: NextRequest, response: NextResponse) => {
+const handleTheme = (request: NextRequest) => {
   // theme detection
-  const cookieTheme = request.cookies.get(THEME_COOKIE_KEY)?.value ?? 'light';
-  // set request headers and cookies
-  response.cookies.set(THEME_COOKIE_KEY, cookieTheme, {
-    maxAge: 365 * 24 * 60 * 60,
-    path: '/',
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-  });
+  const cookieTheme = (request.cookies.get(THEME_COOKIE_KEY)?.value as Theme) ?? 'light';
+
+  // save theme preference
+  ssrPrefService.saveThemePreference(cookieTheme);
 };
 
 const defaultPlugin: MWPlugin = {
   middleware: (request) => {
-    const response = NextResponse.next();
-    handleTheme(request, response);
-    return response;
+    handleTheme(request);
   },
   // handle all default api
   matcher: () => true,

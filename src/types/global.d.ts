@@ -1,6 +1,8 @@
 import type { NextRequest, NextResponse } from 'next/server';
 
 declare global {
+  type JSBaseType = string | number | boolean | object | null | undefined;
+
   interface MWPlugin {
     middleware: (request: NextRequest, response: NextResponse) => void;
     matcher: (request: NextRequest) => boolean;
