@@ -5,7 +5,7 @@ export default class LocalStorageAdapter implements EnvironmentAwareStorage {
   private prefix: string;
 
   constructor(config?: { prefix?: string }) {
-    this.prefix = config?.prefix || 'app_';
+    this.prefix = config?.prefix || '';
   }
 
   private getPrefixedKey(key: string): string {

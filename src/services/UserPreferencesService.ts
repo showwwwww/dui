@@ -1,11 +1,5 @@
 import { IStorage } from '@/storage/IStorage';
-import {
-  THEME_COOKIE_KEY,
-  LOCALE_COOKIE_KEY,
-  DEFAULT_LOCALE,
-  DEFAULT_THEME,
-  APP_NAME,
-} from '@/const';
+import { THEME_COOKIE_KEY, LOCALE_COOKIE_KEY, DEFAULT_LOCALE, DEFAULT_THEME } from '@/const';
 import LocalStorageAdapter from '@/storage/adapters/LocalStorageAdapter';
 import CookieStorage from '@/storage/adapters/CookieStorageAdapter';
 
@@ -66,8 +60,8 @@ class UserPreferencesService {
   }
 }
 
-const localStorage = new LocalStorageAdapter({ prefix: `${APP_NAME}_` });
-const cookieStorage = new CookieStorage({ prefix: `${APP_NAME}_` });
+const localStorage = new LocalStorageAdapter();
+const cookieStorage = new CookieStorage();
 const userPrefService = new UserPreferencesService({
   theme: cookieStorage,
   locale: cookieStorage,

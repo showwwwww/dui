@@ -1,16 +1,10 @@
 import { IStorage } from '@/storage/IStorage';
-import {
-  THEME_COOKIE_KEY,
-  LOCALE_COOKIE_KEY,
-  DEFAULT_LOCALE,
-  DEFAULT_THEME,
-  APP_NAME,
-} from '@/const';
-import FileStorageAdapter from '@/storage/adapters/FileStorageAdapter';
+import { THEME_COOKIE_KEY, LOCALE_COOKIE_KEY, DEFAULT_LOCALE, DEFAULT_THEME } from '@/const';
+import CookieForServer from '@/storage/adapters/CookieForServerAdapter';
 
 const EXPIRED_TIME_DAY = 365;
 
-class UserPreferencesService {
+class ServerPreferencesService {
   constructor(
     private storage: {
       theme: IStorage;
@@ -37,12 +31,17 @@ class UserPreferencesService {
   async getLocalePreference(): Promise<Locale> {
     return ((await this.storage.locale.get<string>(LOCALE_COOKIE_KEY)) as Locale) || DEFAULT_LOCALE;
   }
+
+  async getTranslations(locale: Locale): Promise<TranslationKeys> {
+    return (await import(`@/locales/${locale}/index`)).default;
+  }
 }
 
 // server side
-const serverStorage = new FileStorageAdapter({
-  storagePath: `/var/data/${APP_NAME}`,
+const cookieStorage = new CookieForServer();
+const ssrPrefService = new ServerPreferencesService({
+  theme: cookieStorage,
+  locale: cookieStorage,
 });
-const ssrPrefService = new UserPreferencesService({ theme: serverStorage, locale: serverStorage });
 
 export default ssrPrefService;

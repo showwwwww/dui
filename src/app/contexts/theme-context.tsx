@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import userPrefService from '@/service/UserPreferencesService';
+import userPrefService from '@/services/UserPreferencesService';
 
 const ThemeContext = React.createContext<{
   theme: Theme;

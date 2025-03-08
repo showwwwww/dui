@@ -4,8 +4,8 @@ declare global {
   type JSBaseType = string | number | boolean | object | null | undefined;
 
   interface MWPlugin {
-    middleware: (request: NextRequest, response: NextResponse) => void;
-    matcher: (request: NextRequest) => boolean;
+    middleware: (request: NextRequest, response: NextResponse) => Promise<void> | void;
+    matcher: (request: NextRequest) => Promise<boolean> | boolean;
   }
 
   type Theme = 'light' | 'dark';

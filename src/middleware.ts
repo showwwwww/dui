@@ -5,15 +5,15 @@ const exclude = (request: Request): boolean => {
   return request.url.startsWith('/api') || request.url.startsWith('/_next');
 };
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   if (exclude(request)) {
     return response;
   }
 
   for (const plugin of plugins) {
-    if (plugin.matcher(request)) {
-      plugin.middleware(request, response);
+    if (await plugin.matcher(request)) {
+      await plugin.middleware(request, response);
     }
   }
 

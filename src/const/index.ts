@@ -9,3 +9,5 @@ export const DEFAULT_LOCALE = 'en';
 export const DEFAULT_THEME = 'light';
 
 export const locales = ['en', 'zh-CN'] as const satisfies readonly Locale[];
+
+export const themes = ['light', 'dark'] as const satisfies readonly Theme[];

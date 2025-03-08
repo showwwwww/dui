@@ -2,11 +2,11 @@ import Cookies from 'js-cookie';
 import { EnvironmentAwareStorage, StorageOptions } from '../IStorage';
 
 export default class CookieStorage implements EnvironmentAwareStorage {
-  readonly environment = 'both';
+  readonly environment = 'browser';
   private prefix: string;
 
   constructor(config?: { prefix?: string }) {
-    this.prefix = config?.prefix || 'app_';
+    this.prefix = config?.prefix || '';
   }
 
   private getPrefixedKey(key: string): string {
@@ -26,6 +26,7 @@ export default class CookieStorage implements EnvironmentAwareStorage {
     Cookies.set(this.getPrefixedKey(key), value as string, {
       expires: options?.ttl ? options.ttl / 60 / 60 / 24 : undefined,
       sameSite: 'lax',
+      path: options?.path || '/',
       secure: process.env.NODE_ENV === 'production',
     });
   }

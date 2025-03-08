@@ -1,5 +1,3 @@
-import type { JSBaseType } from '@/types/common';
-
 const calculateHash = (data: JSBaseType, algorithm: 'SHA-256' | 'MD5' = 'SHA-256'): string => {
   try {
     // Helper function to convert any value to a UTF-8 Uint8Array
