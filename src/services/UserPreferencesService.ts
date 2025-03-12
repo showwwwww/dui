@@ -11,6 +11,7 @@ class UserPreferencesService {
       theme: IStorage;
       locale: IStorage;
       translations: IStorage;
+      token: IStorage;
     }
   ) {}
 
@@ -58,6 +59,14 @@ class UserPreferencesService {
       return defaultTranslations;
     }
   }
+
+  async saveToken(token: string): Promise<void> {
+    await this.storage.token.set('jwt_token', token);
+  }
+
+  async getToken(): Promise<string | null> {
+    return this.storage.token.get('jwt_token');
+  }
 }
 
 const localStorage = new LocalStorageAdapter();
@@ -66,6 +75,7 @@ const userPrefService = new UserPreferencesService({
   theme: cookieStorage,
   locale: cookieStorage,
   translations: localStorage,
+  token: cookieStorage,
 });
 
 export default userPrefService;

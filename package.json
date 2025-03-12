@@ -7,13 +7,15 @@
     "dev": "concurrently \"next dev --turbopack\" \"npm run watch-plugins\"",
     "watch-plugins": "npm run scripts && node ./scripts/dev-watcher.mjs",
     "build": "npm run scripts && next build",
-    "start": "next start",
+    "start": "node ./scripts/init-admin.mjs && next start",
     "lint": "npm run scripts && next lint",
     "prepare": "npm run scripts && husky install",
     "scripts": "node ./scripts/generates-mw-plugins.mjs --source ./src/mw-plugins --output ./src/mw-plugins"
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.6.0",
+    "bcryptjs": "^3.0.2",
+    "inquirer": "^12.4.3",
     "js-cookie": "^3.0.5",
     "negotiator": "^1.0.0",
     "next": "15.2.1",
