@@ -16,7 +16,8 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Debug
-        run: echo ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo ${{ toJSON(secrets) }}
 
       - name: Connect to ECS and Deploy
         uses: appleboy/ssh-action@v1.2.2
