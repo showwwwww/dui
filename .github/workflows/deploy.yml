@@ -18,7 +18,7 @@ jobs:
       - name: Debug SSH Key
         run: |
           echo "Private Key: "
-          echo "${{ secrets.IPVS.SERVER_IP }}"
+          echo "${{ secrets.SERVER_IP }}"
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
