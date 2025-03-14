@@ -15,24 +15,14 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Debug SSH Key
-        run: |
-          echo "Private Key: "
-          echo "${{ secrets.SERVER_IP }}"
-
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          name: github-actions-deploy
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-
       - name: Connect to ECS and Deploy
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.SERVER_IP }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
           script: |
             cd /var/www/dui
             git fetch --tags
