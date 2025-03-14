@@ -1,0 +1,58 @@
+name: Deploy to Aliyun ECS
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Debug
+        run: |
+          echo "secrets is:"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/./*/g'
+
+      - name: Add ECS to Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Connect to ECS and Deploy
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/dui
+            git fetch origin ${{ github.ref_name }}
+            git checkout ${{ github.ref_name }}
+            docker build --build-arg REGISTRY=${{ vars.DOCKER_MIRROR_REGISTRY }} -t dui:${{ github.ref_name }} .
+            docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }} ${{ vars.MY_DOCKER_REGISTRY }}
+            docker tag dui:${{ github.ref_name }} ${{ vars.MY_DOCKER_REGISTRY }}/${{ vars.MY_DOCKER_NAMESPACE }}/dui:${{ github.ref_name }}
+            docker push ${{ vars.MY_DOCKER_REGISTRY }}/${{ vars.MY_DOCKER_NAMESPACE }}/dui:${{ github.ref_name }}
+
+            if docker ps -a | grep -q dui-container; then
+              docker stop dui-container
+              docker rm dui-container
+            fi
+
+            docker image prune -f
+            docker run -d \
+              --name dui-container \
+              --restart unless-stopped \
+              -p 9699:9699 \
+              -e NEXT_USERNAME=${{ secrets.DUI_USERNAME }} \
+              -e NEXT_PASSWORD=${{ secrets.DUI_PASSWORD }} \
+              ${{ vars.MY_DOCKER_REGISTRY }}/${{ vars.MY_DOCKER_NAMESPACE }}/dui:${{ github.ref_name }}
+
+            docker ps | grep dui-container

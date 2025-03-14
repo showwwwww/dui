@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { USERNAME, PASSWORD } from './const-global/index.mjs';
 
 const ContentSecurityPolicy = `
   default-src 'self';
@@ -73,6 +74,10 @@ const nextConfig: NextConfig = {
       headers: securityHeaders,
     },
   ],
+  serverRuntimeConfig: {
+    [USERNAME]: process.env[USERNAME],
+    [PASSWORD]: process.env[PASSWORD],
+  },
 };
 
 export default nextConfig;

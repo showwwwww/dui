@@ -1,11 +1,14 @@
 import NextAuth, { type NextAuthOptions } from 'next-auth';
+import getConfig from 'next/config';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from '@/lib/auth-utils';
 import { USERNAME, PASSWORD } from '../../const-global/index.mjs';
 
 const getAdminCredentials = (): { username: string; passwordHash: string } => {
-  const username = process.env[USERNAME];
-  const passwordHash = process.env[PASSWORD];
+  const { serverRuntimeConfig } = getConfig();
+  const username = serverRuntimeConfig[USERNAME];
+  const passwordHash = serverRuntimeConfig[PASSWORD];
+  console.log('username', username, passwordHash, 'passwordHash');
   if (!username || !passwordHash) {
     return { username: '', passwordHash: '' };
   }
