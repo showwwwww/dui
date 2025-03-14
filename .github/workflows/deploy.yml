@@ -18,7 +18,12 @@ jobs:
       - name: Debug
         run: |
           echo "secrets is:"
-          echo "${{ secrets.SSH_PRIVATE_KEY }}"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/./*/g'
+
+      - name: Add ECS to Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Connect to ECS and Deploy
         uses: appleboy/ssh-action@v1.2.2
@@ -27,7 +32,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
           script: |
             cd /var/www/dui
             git fetch --tags
