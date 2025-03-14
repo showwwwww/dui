@@ -33,11 +33,10 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            source ~/.nvm/nvm.sh
-            nvm use ${{ vars.NODE_VERSION }}
+            export PATH=~/.nvm/versions/node/${{ vars.NODE_VERSION }}/bin:$PATH
             cd /var/www/dui
-            git pull origin debug
             git checkout debug
+            git pull origin debug
             npm install
             npm run build
             npm start
