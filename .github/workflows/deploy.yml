@@ -36,8 +36,9 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use ${{ vars.NODE_VERSION }}
-            cd /var/www/myapp
-            git pull origin main
+            cd /var/www/dui
+            git pull origin debug
+            git checkout debug
             npm install
             npm run build
             npm start
