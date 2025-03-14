@@ -18,7 +18,7 @@ jobs:
       - name: Debug SSH Key
         run: |
           echo "Private Key: "
-          echo "${{ secrets.SSH_PRIVATE_KEY }}"
+          echo "${{ toJson(secrets) }}"
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
