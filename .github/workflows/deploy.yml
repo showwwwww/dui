@@ -17,7 +17,8 @@ jobs:
 
       - name: Debug
         run: |
-          echo ${{ toJSON(secrets) }}
+          echo "secrets is:"
+          echo "${{ toJSON(secrets) }}"
 
       - name: Connect to ECS and Deploy
         uses: appleboy/ssh-action@v1.2.2
