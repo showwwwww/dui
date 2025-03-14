@@ -23,7 +23,7 @@ jobs:
       - name: Add ECS to Known Hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Connect to ECS and Deploy
         uses: appleboy/ssh-action@v1.2.2
