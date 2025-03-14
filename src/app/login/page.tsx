@@ -1,11 +1,13 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useI18n } from '@/app/contexts/i18n-context';
 
 export default function Login() {
   const { locale, setLocale, translations: t } = useI18n();
+  const router = useRouter();
   return (
     <div>
       <button
@@ -13,11 +15,11 @@ export default function Login() {
           const csrf = await fetch('/api/auth/csrf').then((res) => res.json());
           await signIn('credentials', {
             csrfToken: csrf.csrfToken,
-            redirect: true,
+            redirect: false,
             username: 'test',
             password: '123456789',
-            callbackUrl: '/home',
           });
+          router.push('/home');
         }}
       >
         {t?.loginPage.loginButton}

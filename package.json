@@ -4,10 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev --turbopack\" \"npm run watch-plugins\"",
+    "dev": "concurrently \"next dev --turbopack -p 9699\" \"npm run watch-plugins\"",
     "watch-plugins": "npm run scripts && node ./scripts/dev-watcher.mjs",
     "build": "npm run scripts && next build",
-    "start": "node ./scripts/init-admin.mjs && next start",
+    "start": "node ./scripts/init-admin.mjs && next start -p 9699",
     "lint": "npm run scripts && next lint",
     "prepare": "npm run scripts && husky install",
     "scripts": "node ./scripts/generates-mw-plugins.mjs --source ./src/mw-plugins --output ./src/mw-plugins"
