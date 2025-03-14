@@ -33,12 +33,11 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            source ~/.bashrc
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/dui
-            git fetch --tags
-            git checkout ${{ github.ref_name }}
+            nvm use ${{ vars.NODE_VERSION }}
+            cd /var/www/myapp
+            git pull origin main
             npm install
             npm run build
             npm start
