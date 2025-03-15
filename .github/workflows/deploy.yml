@@ -37,4 +37,5 @@ jobs:
             git checkout debug
             git pull origin debug
             echo "Docker version:"
-            docker -v
+            docker build -t dui:debug .
+            docker run -d -p 9699:9699 --name dui dui:debug
