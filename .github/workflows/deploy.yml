@@ -33,14 +33,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "===== ENV DUMP ====="
-            echo "Node version: $(node -v)"
-            echo "NPM version: $(npm -v)"
-            echo "PATH: $PATH"
-            echo "===================="
             cd /var/www/dui
             git checkout debug
             git pull origin debug
-            npm install
-            npm run build
-            npm start
+            /root/.nvm/versions/node/v20.16.0/bin/npm install
+            /root/.nvm/versions/node/v20.16.0/bin/npm run build
+            /root/.nvm/versions/node/v20.16.0/bin/npm start
