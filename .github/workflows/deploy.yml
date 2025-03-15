@@ -36,4 +36,5 @@ jobs:
             cd /var/www/dui
             git checkout debug
             git pull origin debug
-            echo docker -v
+            echo "Docker version:"
+            docker -v
