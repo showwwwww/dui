@@ -36,6 +36,4 @@ jobs:
             cd /var/www/dui
             git checkout debug
             git pull origin debug
-            /root/.nvm/versions/node/v20.16.0/bin/npm install
-            /root/.nvm/versions/node/v20.16.0/bin/npm run build
-            /root/.nvm/versions/node/v20.16.0/bin/npm start
+            echo docker -v
