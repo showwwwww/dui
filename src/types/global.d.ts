@@ -13,10 +13,22 @@ declare global {
   type Locale = 'en' | 'zh-CN';
 
   type TranslationKeys = {
+    header: {
+      title: string;
+    };
     loginPage: {
       loginButton: string;
     };
   };
+  declare module '*.svg' {
+    import * as React from 'react';
+
+    const ReactComponent: React.FunctionComponent<
+      React.SVGProps<SVGSVGElement> & { title?: string }
+    >;
+
+    export default ReactComponent;
+  }
 
   type Translations = {
     [key in Locale]: TranslationKeys;

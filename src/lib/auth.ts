@@ -8,7 +8,6 @@ const getAdminCredentials = (): { username: string; passwordHash: string } => {
   const { serverRuntimeConfig } = getConfig();
   const username = serverRuntimeConfig[USERNAME];
   const passwordHash = serverRuntimeConfig[PASSWORD];
-  console.log('username', username, passwordHash, 'passwordHash');
   if (!username || !passwordHash) {
     return { username: '', passwordHash: '' };
   }
