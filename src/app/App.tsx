@@ -45,7 +45,9 @@ export default function App({
 
   return (
     <html lang={locale} data-theme={theme}>
-      <body className={`antialiased pt-12`}>
+      <body
+        className={'antialiased pt-12 h-screen bg-gradient-to-br from-background to-foreground/35'}
+      >
         <SessionProvider refetchInterval={60 * 24} refetchOnWindowFocus={true}>
           <Header />
           {children}

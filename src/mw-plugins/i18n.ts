@@ -34,7 +34,7 @@ const defaultPlugin: MWPlugin = {
     await handleI18n(request, response);
   },
   // handle all default api
-  matcher: () => true,
+  matcher: (req) => !req.url.includes('/api'),
 };
 
 export default defaultPlugin;

@@ -4,6 +4,9 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from '@/lib/auth-utils';
 import { USERNAME, PASSWORD } from '../../const-global/index.mjs';
 
+let currentTokenVersion = 1;
+let lastInvalidationTime = Date.now();
+
 const getAdminCredentials = (): { username: string; passwordHash: string } => {
   const { serverRuntimeConfig } = getConfig();
   const username = serverRuntimeConfig[USERNAME];
@@ -24,6 +27,10 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const { username, passwordHash } = getAdminCredentials();
+
+        currentTokenVersion += 1;
+        lastInvalidationTime = Date.now();
+
         if (!credentials?.username || !credentials.password) {
           return null;
         }
@@ -41,6 +48,8 @@ export const authOptions: NextAuthOptions = {
           id: 'admin-001',
           name: username,
           role: 'admin',
+          tokenVersion: currentTokenVersion,
+          lastInvalidation: lastInvalidationTime,
         };
       },
     }),
@@ -54,12 +63,16 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
+        token.tokenVersion = user.tokenVersion;
+        token.lastInvalidation = user.lastInvalidation;
       }
       return token;
     },
     async session({ session, token }) {
       if (token.role && session.user) {
         session.user.role = token.role;
+        session.tokenVersion = token.tokenVersion;
+        session.lastInvalidation = token.lastInvalidation;
       }
       return session;
     },
@@ -70,3 +83,7 @@ export const authOptions: NextAuthOptions = {
 };
 
 export default NextAuth(authOptions);
+
+export async function validateTokenVersion(tokenVersion?: number, lastInvalidation?: number) {
+  return tokenVersion === currentTokenVersion && (lastInvalidation ?? -1) >= lastInvalidationTime;
+}

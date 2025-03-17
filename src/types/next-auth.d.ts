@@ -8,15 +8,21 @@ declare module 'next-auth' {
     email?: string | null;
     image?: string | null;
     role: string;
+    tokenVersion: number;
+    lastInvalidation: number;
   }
 
   interface Session {
     user: User;
+    tokenVersion?: number;
+    lastInvalidation?: number;
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     role: string;
+    tokenVersion?: number;
+    lastInvalidation?: number;
   }
 }

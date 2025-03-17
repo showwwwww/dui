@@ -118,6 +118,13 @@
   svg {
     stroke: rgb(var(--foreground));
   }
+
+  * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
 }
 
 @theme inline {

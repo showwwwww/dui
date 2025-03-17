@@ -120,9 +120,14 @@ function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   );
 }
 
-function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
+function FormMessage({
+  className,
+  display,
+  ...props
+}: React.ComponentProps<'p'> & { display?: boolean }) {
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message ?? '') : props.children;
+  const body =
+    error || display ? (props.children ? props.children : String(error?.message ?? '')) : null;
 
   if (!body) {
     return null;

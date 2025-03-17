@@ -4,15 +4,12 @@ import plugins from '@/mw-plugins';
 import { PASSWORD } from '../const-global/index.mjs';
 
 const exclude = (request: Request): boolean => {
-  return (
-    request.url.startsWith('/api') ||
-    request.url.startsWith('/_next') ||
-    request.url.includes('/auth')
-  );
+  return request.url.includes('/_next') || request.url.includes('/auth');
 };
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
+
   if (exclude(request)) {
     return response;
   }
@@ -22,12 +19,22 @@ export async function middleware(request: NextRequest) {
       await plugin.middleware(request, response);
     }
   }
-
-  const token = await getToken({ req: request, secret: process.env[PASSWORD] });
-  if (!token && !request.url.includes('/login')) {
-    return NextResponse.redirect(new URL('/login', request.nextUrl.origin));
+  if (!request.url.includes('/login') && !request.url.includes('/validate-token')) {
+    const apiUrl = new URL('/api/validate-token', request.url);
+    const token = await getToken({ req: request, secret: process.env[PASSWORD] });
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tokenVersion: token?.tokenVersion,
+        lastInvalidation: token?.lastInvalidation,
+      }),
+    });
+    const { isValid } = await response.json();
+    if (!isValid) {
+      return NextResponse.redirect(new URL('/login', request.nextUrl.origin));
+    }
   }
-
   return response;
 }
 

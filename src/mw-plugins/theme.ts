@@ -19,7 +19,7 @@ const defaultPlugin: MWPlugin = {
     handleTheme(request, response);
   },
   // handle all default api
-  matcher: () => true,
+  matcher: (req) => !req.url.includes('/api'),
 };
 
 export default defaultPlugin;

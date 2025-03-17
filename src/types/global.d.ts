@@ -17,7 +17,14 @@ declare global {
       title: string;
     };
     loginPage: {
+      title: string;
       loginButton: string;
+      usernameLabel: string;
+      usernamePlaceholder: string;
+      usernameError: string;
+      passwordLabel: string;
+      passwordPlaceholder: string;
+      passwordError: string;
     };
   };
   declare module '*.svg' {
