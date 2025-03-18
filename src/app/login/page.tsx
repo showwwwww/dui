@@ -46,7 +46,7 @@ export default function Login() {
       password,
     });
     setHasErrMsg(!reponse?.ok);
-    router.push('/home');
+    router.push('/statistics');
   });
   return (
     <Card className="w-120 mx-auto my-32 h-128">
@@ -64,10 +64,11 @@ export default function Login() {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t?.loginPage.usernameLabel}</FormLabel>
+                  <FormLabel className="text-foreground">{t?.loginPage.usernameLabel}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="username"
+                      className="border-foreground/15"
                       {...field}
                       onChange={(e) => {
                         setHasErrMsg(false);
@@ -86,9 +87,10 @@ export default function Login() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t?.loginPage.passwordLabel}</FormLabel>
+                  <FormLabel className="text-foreground">{t?.loginPage.passwordLabel}</FormLabel>
                   <FormControl>
                     <Input
+                      className="border-foreground/15"
                       placeholder="password"
                       {...field}
                       type="password"

@@ -13,9 +13,9 @@ function Header() {
   const { setTheme } = useTheme();
   return (
     <header className="fixed top-0 w-full z-10 bg-foreground/5 shadow-md h-12 flex items-center justify-between px-4">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 h-full text-ellipsis overflow-hidden whitespace-nowrap">
         <Image src={Logo} alt="website logo" className="w-8" />
-        <h1>{t.header.title}</h1>
+        <h1 className="text-ellipsis overflow-hidden">{t.header.title}</h1>
       </div>
       <div className="flex items-center">
         <Button
@@ -45,12 +45,10 @@ export default function App({
 
   return (
     <html lang={locale} data-theme={theme}>
-      <body
-        className={'antialiased pt-12 h-screen bg-gradient-to-br from-background to-foreground/35'}
-      >
+      <body className={'antialiased h-screen bg-gradient-to-br from-background to-foreground/35'}>
         <SessionProvider refetchInterval={60 * 24} refetchOnWindowFocus={true}>
           <Header />
-          {children}
+          <div className="h-[calc(100vh-var(--spacing)*12)] pt-12">{children}</div>
         </SessionProvider>
       </body>
     </html>
