@@ -9,11 +9,11 @@ export default function Layout({
   content: React.ReactNode;
 }) {
   return (
-    <SidebarProvider className="min-h-50">
+    <SidebarProvider className="min-h-full overflow-hidden">
       {sidebar}
-      <main>
+      <main className="flex-1">
         <SidebarTrigger />
-        {content}
+        <div className="h-[calc(100%-var(--spacing)*6)]">{content}</div>
       </main>
     </SidebarProvider>
   );

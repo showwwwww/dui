@@ -34,7 +34,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/dui
-            git fetch origin ${{ github.ref_name }}
+            git fetch
             git checkout ${{ github.ref_name }}
             docker build --build-arg REGISTRY=${{ vars.DOCKER_MIRROR_REGISTRY }} -t dui:${{ github.ref_name }} .
             docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }} ${{ vars.MY_DOCKER_REGISTRY }}
@@ -51,8 +51,8 @@ jobs:
               --name dui-container \
               --restart unless-stopped \
               -p 9699:9699 \
-              -e NEXT_USERNAME=${{ secrets.DUI_USERNAME }} \
-              -e NEXT_PASSWORD=${{ secrets.DUI_PASSWORD }} \
+              -e NEXTAUTH_SECRET=${{ secrets.DUI_NEXTAUTH_SECRET }} \
+              -e MONGODB_URI=${{ secrets.DUI_MONGODB_URI }} \
               ${{ vars.MY_DOCKER_REGISTRY }}/${{ vars.MY_DOCKER_NAMESPACE }}/dui:${{ github.ref_name }}
 
             docker ps | grep dui-container

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import plugins from '@/mw-plugins';
-import { PASSWORD } from '../const-global/index.mjs';
 
 const exclude = (request: Request): boolean => {
   return request.url.includes('/_next') || request.url.includes('/auth');
@@ -21,7 +20,7 @@ export async function middleware(request: NextRequest) {
   }
   if (!request.url.includes('/login') && !request.url.includes('/validate-token')) {
     const apiUrl = new URL('/api/validate-token', request.url);
-    const token = await getToken({ req: request, secret: process.env[PASSWORD] });
+    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

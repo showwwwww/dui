@@ -1,23 +1,34 @@
 import NextAuth, { type NextAuthOptions } from 'next-auth';
-import getConfig from 'next/config';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 import { verifyPassword } from '@/lib/auth-utils';
-import { USERNAME, PASSWORD } from '../../const-global/index.mjs';
+import clientPromise from '@/lib/db';
 
 let currentTokenVersion = 1;
 let lastInvalidationTime = Date.now();
 
-const getAdminCredentials = (): { username: string; passwordHash: string } => {
-  const { serverRuntimeConfig } = getConfig();
-  const username = serverRuntimeConfig[USERNAME];
-  const passwordHash = serverRuntimeConfig[PASSWORD];
-  if (!username || !passwordHash) {
-    return { username: '', passwordHash: '' };
-  }
-  return { username, passwordHash };
+const getAdminCredentials = async (
+  username: string
+): Promise<{ username: string; passwordHash: string; roles: string[] }> => {
+  const client = await clientPromise;
+  const db = client.db('dui');
+  const account = await db.collection('accounts').findOne({
+    username,
+  });
+  return {
+    username: account?.username,
+    passwordHash: account?.password,
+    roles: account?.roles,
+  };
 };
 
 export const authOptions: NextAuthOptions = {
+  adapter: MongoDBAdapter(clientPromise, {
+    databaseName: 'dui',
+    collections: {
+      Accounts: 'accounts',
+    },
+  }),
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -26,8 +37,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        const { username, passwordHash } = getAdminCredentials();
-
         currentTokenVersion += 1;
         lastInvalidationTime = Date.now();
 
@@ -35,19 +44,19 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        const { username, passwordHash, roles } = await getAdminCredentials(credentials.username);
         if (credentials.username !== username) {
           return null;
         }
 
         const isValid = await verifyPassword(credentials.password, passwordHash);
-
         if (!isValid) {
           return null;
         }
         return {
           id: 'admin-001',
           name: username,
-          role: 'admin',
+          roles,
           tokenVersion: currentTokenVersion,
           lastInvalidation: lastInvalidationTime,
         };
@@ -58,11 +67,11 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 60 * 24, // 30 days
   },
-  secret: process.env[PASSWORD],
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        token.roles = user.roles;
         token.tokenVersion = user.tokenVersion;
         token.lastInvalidation = user.lastInvalidation;
       }
@@ -70,7 +79,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token.role && session.user) {
-        session.user.role = token.role;
+        session.user.roles = token.roles;
         session.tokenVersion = token.tokenVersion;
         session.lastInvalidation = token.lastInvalidation;
       }

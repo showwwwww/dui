@@ -49,7 +49,7 @@ export default function Login() {
     router.push('/statistics');
   });
   return (
-    <Card className="w-120 mx-auto my-32 h-128">
+    <Card className="w-120 mx-auto mt-[calc((100vh-var(--spacing)*140)*0.5)] h-128">
       <CardHeader className="justify-center">
         <CardTitle className="mx-auto">
           <Image src={Logo} alt="website logo" className="w-24" />

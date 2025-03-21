@@ -26,6 +26,38 @@ declare global {
       passwordPlaceholder: string;
       passwordError: string;
     };
+    homePage: {
+      sidebar: {
+        dockerGroup: {
+          title: string;
+          stats: string;
+          commands: string;
+        };
+      };
+      statsPage: {
+        run: string;
+        stop: string;
+      };
+      commandsPage: {
+        caption: string;
+        columns: {
+          name: string;
+          command: string;
+          params: string;
+          description: string;
+          tags: {
+            title: string;
+            default: string;
+            levels: [string, string, string, string];
+          };
+          actions: {
+            title: string;
+            edit: string;
+            delete: string;
+          };
+        };
+      };
+    };
   };
   declare module '*.svg' {
     import * as React from 'react';

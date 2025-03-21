@@ -1,3 +1,4 @@
+'use client';
 import {
   Sidebar,
   SidebarContent,
@@ -8,38 +9,61 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { MenuItem } from '../types';
+import { AppWindow, Command } from 'lucide-react';
 import Link from 'next/link';
+import { useI18n } from '@/app/contexts/i18n-context';
+import { MenuItem } from '../types';
 
-const menus: MenuItem[] = [
-  {
-    name: 'Statistics',
-    url: '/statistics',
-    icon: () => <span>🏠</span>,
-  },
-];
+const getGroups = (
+  t: TranslationKeys
+): Array<{
+  groupName: string;
+  menus: MenuItem[];
+}> => {
+  return [
+    {
+      groupName: t.homePage.sidebar.dockerGroup.title,
+      menus: [
+        {
+          name: t.homePage.sidebar.dockerGroup.stats,
+          url: '/statistics',
+          icon: () => <AppWindow />,
+        },
+        {
+          name: t.homePage.sidebar.dockerGroup.commands,
+          url: '/commands',
+          icon: () => <Command />,
+        },
+      ],
+    },
+  ];
+};
 
 export default function AppSidebar() {
+  const { translations } = useI18n();
+  const groups = getGroups(translations);
   return (
     <Sidebar className="mt-12">
       <SidebarContent>
-        <SidebarGroup />
-        <SidebarGroupLabel>Group 1</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {menus.map((project) => (
-              <SidebarMenuItem key={project.name}>
-                <SidebarMenuButton asChild>
-                  <Link href={project.url}>
-                    <project.icon />
-                    <span>{project.name}</span>
+        {groups.map((group) => (
+          <SidebarGroup key={group.groupName}>
+            <SidebarGroupLabel>{group.groupName}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.menus.map((menu) => (
+                  <Link key={menu.url} href={menu.url}>
+                    <SidebarMenuItem className="hover:bg-foreground/20">
+                      <SidebarMenuButton>
+                        <menu.icon />
+                        {menu.name}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-        <SidebarGroup />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
     </Sidebar>
   );

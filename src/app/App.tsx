@@ -45,10 +45,10 @@ export default function App({
 
   return (
     <html lang={locale} data-theme={theme}>
-      <body className={'antialiased h-screen bg-gradient-to-br from-background to-foreground/35'}>
+      <body className="antialiased h-[calc(100vh-var(--spacing)*12)] bg-gradient-to-br overflow-hidden mt-12 from-background to-foreground/35">
         <SessionProvider refetchInterval={60 * 24} refetchOnWindowFocus={true}>
           <Header />
-          <div className="h-[calc(100vh-var(--spacing)*12)] pt-12">{children}</div>
+          <div className="h-full overflow-auto">{children}</div>
         </SessionProvider>
       </body>
     </html>
