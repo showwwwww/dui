@@ -1,9 +1,15 @@
 # Base image
 ARG REGISTRY=docker.io/library
+ARG MONGODB_URI
 FROM ${REGISTRY}/node:20.19.0 AS builder
 
 # Set working directory
 WORKDIR /dui
+
+ARG MONGODB_URI
+ENV MONGODB_URI=${MONGODB_URI}
+
+RUN echo "MONGODB_URI=${MONGODB_URI}" > .env.local
 
 RUN npm config set maxsockets 3 \
     && npm config set fetch-retry-mintimeout 20000 \

@@ -1,3 +1,4 @@
+'use server';
 import Dockerode from 'dockerode';
 import { NextResponse } from 'next/server';
 

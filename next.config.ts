@@ -73,6 +73,32 @@ const nextConfig: NextConfig = {
       headers: securityHeaders,
     },
   ],
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        ssh2: false,
+        crypto: false,
+        fs: false,
+        net: false,
+        tls: false,
+        stream: require.resolve('stream-browserify'),
+      };
+
+      config.externals = {
+        ...config.externals,
+        ssh2: 'commonjs ssh2',
+        crypto: 'commonjs crypto',
+      };
+    }
+
+    config.module.rules.push({
+      test: /\.node$/,
+      loader: 'ignore-loader',
+    });
+
+    return config;
+  },
 };
 
 export default nextConfig;
