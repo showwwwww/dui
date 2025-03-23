@@ -12,19 +12,8 @@ import {
 import { useI18n } from '@/app/contexts/i18n-context';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-
-interface Command {
-  _id: string;
-  name: string;
-  command: string;
-  params: string[];
-  description: string;
-  isDefault: boolean;
-  level: number;
-  isEditable: boolean;
-}
-
-const tagColorMap = ['bg-ring', 'bg-success', 'bg-warning', 'bg-destructive'] as const;
+import { levelColorMap } from '../_common';
+import { Command } from '@/app/api/commands/route';
 
 export default function Commands() {
   const {
@@ -70,7 +59,7 @@ export default function Commands() {
             <TableCell>
               <div className="flex space-x-2">
                 {command.isDefault && <Badge>{commandsPage.columns.tags.default}</Badge>}
-                <Badge className={tagColorMap[command.level]}>
+                <Badge className={levelColorMap[command.level]}>
                   {commandsPage.columns.tags.levels[command.level]}
                 </Badge>
               </div>

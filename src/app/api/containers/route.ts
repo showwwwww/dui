@@ -1,19 +1,65 @@
-'use server';
-import Dockerode from 'dockerode';
 import { NextResponse } from 'next/server';
+import Dockerode from 'dockerode';
+import docker from '@/lib/dockerEngine';
 
-const docker = new Dockerode({ socketPath: '/var/run/docker.sock' });
-
-interface EnhancedContainerInfo {
+export interface EnhancedContainerInfo {
   id: string;
   name: string;
   status: string;
-  running: boolean;
+  isRunning: boolean;
   memoryUsage: string;
   cpuPercent: number;
   uptime: string;
   diskSize: string;
+  isOperable: boolean;
 }
+
+// const mockContainers: EnhancedContainerInfo[] = [
+//   {
+//     id: '1',
+//     status: 'Up 2 hours',
+//     memoryUsage: '100 MB (10%)',
+//     cpuPercent: 10,
+//     uptime: '2h 0m',
+//     diskSize: '1.2 GB',
+//     name: 'Container 1',
+//     isRunning: true,
+//     isOperable: false,
+//   },
+//   {
+//     name: 'Container 2',
+//     isRunning: false,
+//     isOperable: true,
+//     id: '2',
+//     status: 'Exited (0) 1 day ago',
+//     memoryUsage: '0 MB (0%)',
+//     cpuPercent: 0,
+//     uptime: '1d 0h 0m',
+//     diskSize: '1.2 GB',
+//   },
+//   {
+//     name: 'Container 3',
+//     isRunning: true,
+//     isOperable: true,
+//     id: '3',
+//     status: 'Up 1 minute',
+//     memoryUsage: '100 MB (10%)',
+//     cpuPercent: 10,
+//     uptime: '0h 1m',
+//     diskSize: '1.2 GB',
+//   },
+//   {
+//     name: 'Container 4',
+//     isRunning: false,
+//     isOperable: true,
+//     id: '4',
+//     status: 'Exited (0) 1 day ago',
+//     memoryUsage: '0 MB (0%)',
+//     cpuPercent: 0,
+//     uptime: '1d 0h 0m',
+//     diskSize: '1.2 GB',
+//   },
+// ];
 
 export async function GET() {
   try {
@@ -31,7 +77,7 @@ export async function GET() {
       })
     );
 
-    return NextResponse.json({ containers });
+    return NextResponse.json(containers);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(JSON.stringify({ error: errorMessage }), {
@@ -65,6 +111,7 @@ function parseContainerData(
   const startTime = new Date(inspectInfo.State.StartedAt);
   const uptime = Date.now() - startTime.getTime();
 
+  console.log(inspectInfo);
   const diskSize =
     (inspectInfo?.SizeRw ?? inspectInfo?.SizeRootFs)
       ? `${((inspectInfo?.SizeRw || inspectInfo?.SizeRootFs || 0) / 1024 / 1024).toFixed(2)} MB`
@@ -74,11 +121,12 @@ function parseContainerData(
     id: containerInfo.Id,
     name: containerInfo.Names[0].replace(/^\//, ''),
     status: containerInfo.Status,
-    running: containerInfo.State === 'running',
+    isRunning: containerInfo.State === 'running',
     memoryUsage: `${(memoryUsage / 1024 / 1024).toFixed(2)} MB (${memoryPercent}%)`,
     cpuPercent,
     uptime: formatUptime(uptime),
     diskSize,
+    isOperable: containerInfo.Names[0].replace(/^\//, '') === 'dui-container',
   };
 }
 

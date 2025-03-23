@@ -23,6 +23,12 @@ const translations: TranslationKeys = {
     statsPage: {
       run: 'Run',
       stop: 'Stop',
+      running: 'Running',
+      stopped: 'Stopped',
+      cpuPercent: 'CPU',
+      memoryUsage: 'Memory',
+      diskSize: 'Disk',
+      uptime: 'Uptime',
     },
     commandsPage: {
       caption: 'A list of Docker commands',

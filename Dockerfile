@@ -9,8 +9,6 @@ WORKDIR /dui
 ARG MONGODB_URI
 ENV MONGODB_URI=${MONGODB_URI}
 
-RUN echo "MONGODB_URI=${MONGODB_URI}" > .env.local
-
 RUN npm config set maxsockets 3 \
     && npm config set fetch-retry-mintimeout 20000 \
     && npm config set fetch-retry-maxtimeout 120000

@@ -37,6 +37,12 @@ declare global {
       statsPage: {
         run: string;
         stop: string;
+        running: string;
+        stopped: string;
+        uptime: string;
+        cpuPercent: string;
+        memoryUsage: string;
+        diskSize: string;
       };
       commandsPage: {
         caption: string;

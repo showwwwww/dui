@@ -23,6 +23,12 @@ const translations: TranslationKeys = {
     statsPage: {
       run: '启动',
       stop: '停止',
+      running: '运行中',
+      stopped: '已停止',
+      cpuPercent: 'CPU',
+      memoryUsage: '内存',
+      diskSize: '硬盘',
+      uptime: '运行时间',
     },
     commandsPage: {
       caption: 'Docker 指令列表',

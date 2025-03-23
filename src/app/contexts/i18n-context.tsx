@@ -29,7 +29,6 @@ export function I18nProvider({
     userPrefService.saveLocalePreference(locale);
     userPrefService.getTranslations(locale).then(setTranslations);
   }, [locale]);
-
   return (
     <I18nContext.Provider value={{ locale, setLocale, translations }}>
       {children}
