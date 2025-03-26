@@ -111,7 +111,7 @@ function parseContainerData(
   const startTime = new Date(inspectInfo.State.StartedAt);
   const uptime = Date.now() - startTime.getTime();
 
-  console.log(inspectInfo);
+  console.log('conatainerInfo', containerInfo, 'stats', stats, 'inspectInfo', inspectInfo);
   const diskSize =
     (inspectInfo?.SizeRw ?? inspectInfo?.SizeRootFs)
       ? `${((inspectInfo?.SizeRw || inspectInfo?.SizeRootFs || 0) / 1024 / 1024).toFixed(2)} MB`
